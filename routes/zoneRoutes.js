@@ -35,10 +35,14 @@ router.post("/", requireAuth, async (req, res) => {
 // ✅ جلب كل المناطق (حسب الفرع أو التينانت لو محتاج)
 router.get("/", requireAuth, async (req, res) => {
   try {
-    const { tenantId, branchId } = req.query;
+    const { branchId } = req.query;
+    const { tenantId } = req.user;
+
+    console.log("r", tenantId)
     let query = {};
     if (tenantId) query.tenantId = tenantId;
     if (branchId && branchId !== "all") query.branchId = branchId; // 🟢 تجاهل "all"
+    console.log("q", query)
     const zones = await Zone.find(query).populate("branchId", "name");
     res.status(200).json(zones);
   } catch (error) {
